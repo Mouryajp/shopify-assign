@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+.envrc
+.venv/
+.Python
+
+# SQLite database
+shopify.db
+
+# VSCode settings
+.vscode/
+
+# Test/report/log artifacts
+*.log
+*.tmp
+*.sqlite3
+*.db
+*.pid
+
+# Mac/Linux
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# mypy
+.mypy_cache/
+
+# Pytest
+.pytest_cache/
+
+# Uvicorn
+*.coverage

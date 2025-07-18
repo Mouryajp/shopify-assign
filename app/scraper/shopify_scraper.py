@@ -12,7 +12,7 @@ def fetch_page(url):
 
 def get_json_products(base_url):
     try:
-        res = requests.get(urljoin(base_url, "/products.json"))
+        res = requests.get(urljoin(str(base_url), "/products.json"))
         return res.json().get("products", [])
     except:
         return []
@@ -31,7 +31,6 @@ def extract_insights(website_url: str) -> StoreResponse:
     text = soup.get_text()
     emails, phones = extract_emails_phones(text)
 
-    # Policies and About Pages
     pages = {
         "privacy_policy": "/pages/privacy-policy",
         "return_policy": "/pages/return-policy",
@@ -52,12 +51,10 @@ def extract_insights(website_url: str) -> StoreResponse:
             else:
                 policies[name] = content
 
-    # Hero Products (very basic placeholder)
     hero_products = []
-    for img_tag in soup.select("img")[:5]:  # very naive
+    for img_tag in soup.select("img")[:5]:
         hero_products.append(Product(title="Hero Product", image=img_tag.get("src")))
 
-    # Product Catalog
     raw_products = get_json_products(website_url)
     catalog = [
         Product(
@@ -69,7 +66,6 @@ def extract_insights(website_url: str) -> StoreResponse:
         for prod in raw_products
     ]
 
-    # Social Links
     social_links = {}
     for link in soup.find_all("a", href=True):
         href = link['href']
@@ -80,7 +76,6 @@ def extract_insights(website_url: str) -> StoreResponse:
         if "tiktok.com" in href:
             social_links["tiktok"] = href
 
-    # Footer links
     important_links = {}
     for link in soup.find_all("a", href=True):
         if any(kw in link.text.lower() for kw in ["contact", "track", "blog"]):
@@ -98,7 +93,6 @@ def extract_insights(website_url: str) -> StoreResponse:
         important_links=important_links
     )
 
-
 def parse_faqs(soup):
     faqs = []
     for q in soup.find_all(['h2', 'h3']):
@@ -106,3 +100,11 @@ def parse_faqs(soup):
         if next_p:
             faqs.append({"question": q.get_text(), "answer": next_p.get_text()})
     return faqs
+
+def get_competitor_insights(competitor_urls):
+    insights = []
+    for comp_url in competitor_urls:
+        data = extract_insights(comp_url)
+        if data:
+            insights.append({"url": comp_url, "data": data.dict()})
+    return insights
